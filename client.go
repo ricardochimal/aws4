@@ -3,8 +3,10 @@ package aws4
 import (
 	"io"
 	"net/http"
+    "net/http/httputil"
 	"net/url"
 	"os"
+    "fmt"
 	"strings"
 )
 
@@ -46,6 +48,14 @@ func (c *Client) client() *http.Client {
 
 func (c *Client) Do(req *http.Request) (resp *http.Response, err error) {
 	Sign(c.Keys, req)
+
+    b, e := httputil.DumpRequest(req, true)
+    if e != nil {
+        fmt.Printf("unable to dump request, error=\"%v\"\n", err)
+    } else {
+        fmt.Printf("request dump:\n%v\n\n----END----\n\n", string(b))
+    }
+
 	return c.client().Do(req)
 }
 
